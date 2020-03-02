@@ -4,6 +4,7 @@ import numpy as np
 vs = cv.VideoCapture(0)
 hsvLimitLower = np.array([70, 90, 60])  # (H,S,V) #243
 hsvLimitUpper = np.array([100, 255, 255])
+knownWidth = 39.25
 visionProperties = {"areaMin": 3,
                     "widthMin": 10,
                     "widthMax": 1003,
@@ -16,6 +17,9 @@ visionProperties = {"areaMin": 3,
                     "solidityMin": 5,
                     "solidityMax": 48}
 
+
+def distanceToCamera(knownWidth, focalLength, perWidth):
+    return (knownWidth * focalLength) / perWidth
 
 def filterContours(contours):
     output = []
@@ -43,18 +47,19 @@ def filterContours(contours):
 
 
 def isoTarget(dt):
-    global vs
+ #   global vs
     global hsvLimitLower
     global hsvLimitUpper
+    global KNOWN_WIDTH
+    global KNOWN_DISTANCE
     retval, frame = vs.read()
-    # frame = cv.imread(r"9ft.png")
+    # frame = cv.imread(r"4ft2in.png")
     cv.imshow('frame', frame)
     kernel = np.ones((5, 5), np.uint8)
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
     mask = cv.inRange(hsv, hsvLimitLower, hsvLimitUpper)
     cv.imshow('mask', mask)
     contours, hierarchy = cv.findContours(mask, 1, 2)
-#   cnt = contours[0]
     backdrop = np.zeros((480, 640, 3))  # Backdrop to display the contours
 
     frame_and_target_contour = frame
@@ -73,6 +78,8 @@ def isoTarget(dt):
         rect = cv.rectangle(backdrop, (x, y),
                             ((x + w), (y + h)), (255, 0, 0), 10)
         print(rect)
+        distance = distanceToCamera(KNOWN_WIDTH, 696.1528662420383, w)
+        print(distance)
     except:
         pass
     cv.imshow('processed', cv.drawContours(backdrop,
