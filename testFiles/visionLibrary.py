@@ -1,20 +1,20 @@
 import cv2 as cv
 import numpy as np
 
-vs = cv.VideoCapture(0)
+vs = cv.VideoCapture(3)
 hsvLimitLower = np.array([70, 90, 60])  # (H,S,V) #243
 hsvLimitUpper = np.array([100, 255, 255])
 knownWidth = 39.25
-visionProperties = {"areaMin": 3,
-                    "widthMin": 10,
+visionProperties = {"areaMin": 20,
+                    "widthMin": 35,
                     "widthMax": 1003,
-                    "heightMin": 2,
+                    "heightMin": 15,
                     "heightMax": 1003,
                     "vertexMin": 0,
                     "vertexMax": 1000000,
                     "ratioMin": 1,
-                    "ratioMax": 1000,
-                    "solidityMin": 5,
+                    "ratioMax": 5,
+                    "solidityMin": 10,
                     "solidityMax": 48}
 
 
